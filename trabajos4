@@ -1,0 +1,459 @@
+package buscaminas;
+
+import java.util.Random;
+import java.util.Scanner;
+import javax.swing.JOptionPane;
+
+
+public class Tablero
+{
+    public int filas;
+    public int columnas;
+    
+    //* = mina
+    //# = disponible
+    //$ = marcar (bandera)
+    
+    public Tablero()
+    {
+        
+    }
+    
+    public String[][] crearTablero(int filas, int columnas)
+    {
+        String tablero[][] = new String[filas][columnas];
+        int i,j;
+        for(i = 0; i < filas; i++)
+        {
+            for(j = 0; j < columnas; j++)
+            {
+                tablero[i][j] = "#";
+            }
+        }
+        
+        return tablero;
+    }
+    
+    public String[][] crearTableroConValores(int filas, int columnas)
+    {
+        String tabl[][] = crearTablero(filas,columnas);
+        int f,c;
+        int contador = 0;
+        
+        Random rand = new Random();
+        
+        while(contador < (filas*2))
+        {
+            c = (int)(rand.nextDouble() * filas + 0);
+            f = (int)(rand.nextDouble() * filas + 0);
+            if(tabl[f][c].equals("*"))
+            {
+                //ya hay una mina
+            }
+            else
+            {
+                tabl[f][c] = "*";
+                contador++;
+            }
+        }
+        
+        //System.out.println("Contador: " + contador);
+        return tabl;
+    }
+    
+    public void imprimirTablero(String tabl[][])
+    {
+        int i,j;
+        for(i = 0; i < tabl.length; i++)
+        {
+            for(j = 0; j < tabl[i].length; j++)
+            {
+                System.out.print(tabl[i][j] + " ");
+            }
+            
+            System.out.print("\n");
+        }
+    }
+    
+    public void marcar(String tabl[][], String opcion, int fila, int columna)
+    {
+        int i,j;
+        for(i = 0; i < tabl.length; i++)
+        {
+            for(j = 0; j < tabl[i].length; j++)
+            {
+                if(fila == i && columna == j)
+                {
+                    System.out.println("Marcar");
+                    if(tabl[i][j].equals("$"))
+                    {
+                        System.out.println("Esta mina esta marcada. No se puede pisar");
+                    }
+                    else
+                    {
+                        tabl[i][j] = "$";
+                    }                    
+                }
+            }
+        }
+    }
+    
+    public String destapar(String tabl[][], String opcion, int fila, int columna)
+    {
+        int i,j;
+        for(i = 0; i < tabl.length; i++)
+        {
+            for(j = 0; j < tabl[i].length; j++)
+            {
+                if(fila == i && columna == j)
+                {
+                    if(tabl[i][j].equals("*"))
+                    {
+                        return "S";
+                    }
+                    else
+                    {
+                        return "N";
+                    }
+                }
+            }
+        }
+        
+        return "F";
+    }
+    
+    //tablaValores se hace sobre
+    public void vecinos(String tablV[][], String tabl[][], int f, int c)
+    {
+        int cant = 0;
+
+        if(f == 0 && c == 0 && tablV[0][0].equals("#"))
+        {
+            //System.out.println("ESQUINA SUPERIOR IZQUIERDA");
+            if(tablV[f][c+1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c+1].equals("*"))
+            {
+                cant++;
+            }
+            
+            tabl[f][c] = Integer.toString(cant);
+            
+        }
+        else if(f == 0 && c == tablV.length-1 && tablV[f][c].equals("#"))
+        
+        {
+            //System.out.println("ESQUINA SUPERIOR DERECHA");
+
+            if(tablV[f+1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c-1].equals("*"))
+            {
+                cant++;
+            }
+            
+            tabl[f][c] = Integer.toString(cant);
+        }
+        
+        else if(c == 0 && f == tablV.length-1 && tablV[f][c].equals("#"))
+        {
+            //System.out.println("ESQUINA INFERIOR IZQUIERDA");
+            if(tablV[f][c+1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c+1].equals("*"))
+            {
+                cant++;
+            }
+            
+            tabl[f][c] = Integer.toString(cant);
+        }
+        
+        else if(f == tablV.length-1 && c == tablV.length-1 && tablV[f][c].equals("#"))
+        {
+            //System.out.println("ESQUINA INFERIOR DERECHA");
+            if(tablV[f-1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f-1][c-1].equals("*"))
+            {
+                cant++;
+            }
+            
+            tabl[f][c] = Integer.toString(cant);
+        }
+        
+        else if(c == 0 && f > 0 &&  f < tablV.length-2 && tabl[f][c].equals("#"))
+        {
+            //System.out.println("columna izquierda");
+            if(tablV[f-1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f][c+1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f-1][c+1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c+1].equals("*"))
+            {
+                cant++;
+            }
+            
+            tabl[f][c] = Integer.toString(cant);
+        }
+        
+        else if( f == 0 && c > 0 && c < tablV.length-2 && tabl[f][c].equals("#"))
+        {
+            //System.out.println("fila arriba");
+            if(tablV[f][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f][c+1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c+1].equals("*"))
+            {
+                cant++;
+            }
+            
+            tabl[f][c] = Integer.toString(cant);
+        }
+        
+        else if(c == tablV.length-1 && f > 0 && f < tablV.length-2 && tabl[f][c].equals("#"))
+        {
+            //System.out.println("columna derecha");
+            if(tablV[f-1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f-1][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c-1].equals("*"))
+            {
+                cant++;
+            }
+            
+            tabl[f][c] = Integer.toString(cant);
+        }
+        
+        else if(f == tablV.length-1 && c > 0 && c < tablV.length-2 && tabl[f][c].equals("#"))
+        {
+            //System.out.println("fila abajo");
+            if(tablV[f][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f][c+1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f-1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f-1][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f-1][c+1].equals("*"))
+            {
+                cant++;
+            }
+            
+            tabl[f][c] = Integer.toString(cant);
+        }
+        
+        else
+        {
+            if(tablV[f-1][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f-1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f-1][c+1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f][c+1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c-1].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c].equals("*"))
+            {
+                cant++;
+            }
+            if(tablV[f+1][c+1].equals("*"))
+            {
+                cant++;
+            }
+            
+            tabl[f][c] = Integer.toString(cant);
+        }
+    }
+    
+    public int juegoBuscaminas()
+    {
+            int bandera = 0;
+            Tablero matriz = new Tablero();
+            Scanner numeros = new Scanner(System.in);
+            System.out.println("");
+            System.out.println("Digite el lado del tablero de juego: ");
+            int filas = numeros.nextInt();
+            int columnas = filas;
+            String tabla[][] = matriz.crearTablero(filas,columnas);
+            String tablaValores[][] = matriz.crearTableroConValores(filas, columnas);
+            System.out.println("Tablero de juego");
+            System.out.println("");
+            matriz.imprimirTablero(tabla);
+            //matriz.imprimirTablero(tablaValores);
+
+            int numMarcas = 0;
+            int numMarcasTotales = filas * 2;
+
+            while(true)
+            {
+                System.out.println("\n");
+                System.out.println("Digite la fila: ");
+                int fila = numeros.nextInt();
+                if(fila >= 0 && fila <= filas)
+                {
+                    System.out.println("Digite la columna: ");
+                    int columna = numeros.nextInt();
+                    if(columna >= 0 && columna <= columnas)
+                    {
+                        System.out.println("Digite la instruccion (Marcar(M-m) - Destapar(D-d)): ");
+                        String opc = numeros.next();
+                        if(opc.equals("M") || opc.equals("m"))
+                        {
+                            if(numMarcas < numMarcasTotales)
+                            {
+                                matriz.marcar(tabla, opc, fila, columna);
+                                matriz.imprimirTablero(tabla);
+                                numMarcas++;
+                            }
+                            else
+                            {
+                                System.out.println("Ya puso el numero de marcas totales");
+                            }
+
+                        }
+
+                        else if(opc.equals("D") || opc.equals("d"))
+                        {
+                            String result = matriz.destapar(tablaValores, opc, fila, columna);
+                            if(result.equals("S"))
+                            {
+                               JOptionPane.showMessageDialog(null,"HAY UNA MINA. PERDISTE","ERROR",JOptionPane.ERROR_MESSAGE);
+                                System.out.println("");
+                                System.out.println("----> Tablero con las posiciones de las minas");
+                                System.out.println("");
+                                matriz.imprimirTablero(tablaValores);
+                                bandera = 1;
+                                break;
+                                
+                            }
+
+                            else if(result.equals("N"))
+                            {
+                                matriz.vecinos(tablaValores, tabla, fila, columna);
+                                matriz.imprimirTablero(tabla);
+                            }
+
+                            else
+                            {
+                                System.out.println("Error desconocido");
+                            }
+                        }
+
+                        else
+                        {
+                            System.out.println("Instruccion desconocida");
+                        }
+                    }
+
+                    else
+                    {
+                        System.out.println("Columna fuera del rango. Intentelo de nuevo");
+                    }
+                }
+
+                else
+                {
+                    System.out.println("Fila fuera del rango. Intentelo de nuevo");
+                }
+            }
+            
+            if(bandera == 0)
+            {
+                //GANÓ
+                return 0;
+            }
+            else
+            {
+                //perdio;
+                return 1;
+            }
+        }
+    
+}
