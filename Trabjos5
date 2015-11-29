@@ -1,0 +1,48 @@
+package buscaminas;
+
+import javax.swing.JOptionPane;
+
+public class Buscaminas
+{
+
+    public static void main(String[] args)
+    {
+        int juegos = 0; 
+        int juegosPerdidos = 0; 
+        int juegosGanados = 0;
+        while(true)
+        {
+            Tablero tabla = new Tablero();
+            int opcion = JOptionPane.showOptionDialog(null,"Seleccione la opción","Menú del juego",
+                    JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,
+                    new Object[] {"Juego Nuevo","Salir del juego"},"Juego Nuevo");
+
+            opcion = opcion + 1;
+
+            if(opcion == 1)
+            {
+                juegos++;
+                int result = tabla.juegoBuscaminas();
+                if(result == 0)
+                {
+                    juegosGanados++;
+                }
+                else
+                {
+                    juegosPerdidos++;
+                }
+                
+                System.out.println("Juegos totales: " + juegos);
+                System.out.println("Juegos ganados: " + juegosGanados);
+                System.out.println("Juegos perdidos: " + juegosPerdidos);
+                System.out.println("Porcentaje: " + ((juegosGanados/juegos)*100));
+            }
+            else
+            {
+                System.exit(0);
+            }
+        }
+        
+    }
+        
+}
